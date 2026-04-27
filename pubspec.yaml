@@ -1,0 +1,28 @@
+name: velura_app
+description: Velura Fashion App
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  provider: ^6.1.1
+  go_router: ^13.0.0
+  cached_network_image: ^3.3.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/men/
+    - assets/images/women/
+    - assets/images/kids/
+    - assets/images/accessories/
+    - assets/images/shoes/
