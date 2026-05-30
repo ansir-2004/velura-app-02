@@ -4,6 +4,8 @@ import '../../core/constants/colors.dart';
 import '../../providers/cart_provider.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_textfield.dart';
+import '../../widgets/product_image.dart';
+import '../../utils/helpers.dart';
 
 class PlaceOrderScreen extends StatefulWidget {
   const PlaceOrderScreen({super.key});
@@ -126,10 +128,10 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
                           borderRadius: BorderRadius.circular(12),
                           child: SizedBox(
                             width: 85, height: 100,
-                            child: Image.asset(item.product.imageUrl, fit: BoxFit.cover,
-                                errorBuilder: (_, __, ___) => Container(
-                                    color: AppColors.border,
-                                    child: const Icon(Icons.image_not_supported, color: AppColors.hint))),
+                            child: ProductImage(
+                              imageUrl: item.product.imageUrl,
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -175,11 +177,11 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            Text('Rs. ${item.product.price.toStringAsFixed(0)}',
+                            Text(Helpers.formatPrice(item.product.price),
                                 style: const TextStyle(color: AppColors.primary,
                                     fontWeight: FontWeight.w800, fontSize: 14)),
                             const SizedBox(height: 4),
-                            Text('Rs. ${item.product.oldPrice.toStringAsFixed(0)}',
+                            Text(Helpers.formatPrice(item.product.oldPrice),
                                 style: const TextStyle(color: AppColors.hint, fontSize: 11,
                                     decoration: TextDecoration.lineThrough)),
                             const SizedBox(height: 12),
@@ -237,7 +239,7 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
                                 fontSize: 15, fontWeight: FontWeight.w700)),
                         const SizedBox(height: 14),
                         _payRow('Order Amounts',
-                            'Rs. ${cart.subtotal.toStringAsFixed(0)}'),
+                            Helpers.formatPrice(cart.subtotal)),
                         const SizedBox(height: 10),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -262,11 +264,11 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
                         ),
                         const SizedBox(height: 10),
                         _payRow('Delivery Fee',
-                            cart.shipping == 0 ? 'Free' : 'Rs. ${cart.shipping.toStringAsFixed(0)}',
+                            cart.shipping == 0 ? 'Free' : Helpers.formatPrice(cart.shipping),
                             valueColor: AppColors.success),
                         const Divider(color: AppColors.border, height: 24),
                         _payRow('Order Total',
-                            'Rs. ${cart.total.toStringAsFixed(0)}',
+                            Helpers.formatPrice(cart.total),
                             bold: true),
                         const SizedBox(height: 8),
                         Row(children: [
@@ -401,7 +403,7 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text('Rs. ${cart.total.toStringAsFixed(0)}',
+                      Text(Helpers.formatPrice(cart.total),
                           style: const TextStyle(color: AppColors.primary,
                               fontSize: 18, fontWeight: FontWeight.w800)),
                       GestureDetector(

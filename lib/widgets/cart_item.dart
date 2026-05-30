@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../core/constants/colors.dart';
 import '../models/cart_model.dart';
 import '../utils/helpers.dart';
+import 'product_image.dart';
 
 class CartItemTile extends StatelessWidget {
   final CartItem item;
@@ -23,7 +24,12 @@ class CartItemTile extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
-            child: Image.network(item.product.imageUrl, width: 72, height: 72, fit: BoxFit.cover),
+            child: ProductImage(
+              imageUrl: item.product.imageUrl,
+              width: 72,
+              height: 72,
+              fit: BoxFit.cover,
+            ),
           ),
           const SizedBox(width: 12),
           Expanded(

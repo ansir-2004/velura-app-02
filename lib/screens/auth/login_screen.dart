@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../../core/constants/colors.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_textfield.dart';
+import 'package:provider/provider.dart';
+import '../../providers/auth_provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -21,9 +23,24 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _login() async {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _loading = true);
-    await Future.delayed(const Duration(seconds: 1));
+    
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final success = await authProvider.login(
+      _emailCtrl.text.trim(),
+      _passCtrl.text.trim(),
+    );
+    
     setState(() => _loading = false);
-    if (mounted) Navigator.pushReplacementNamed(context, '/home');
+    
+    if (success) {
+      if (mounted) Navigator.pushReplacementNamed(context, '/home');
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Login failed. Please check your email and password.')),
+        );
+      }
+    }
   }
 
   @override

@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import '../../core/constants/colors.dart';
 import '../../models/cart_model.dart';
 import '../../providers/cart_provider.dart';
+import '../../widgets/product_image.dart';
+import '../../utils/helpers.dart';
 
 class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen({super.key});
@@ -152,13 +154,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                       borderRadius: BorderRadius.circular(12),
                                       child: SizedBox(
                                         width: 90, height: 110,
-                                        child: Image.asset(
-                                          item.product.imageUrl,
+                                        child: ProductImage(
+                                          imageUrl: item.product.imageUrl,
                                           fit: BoxFit.cover,
-                                          errorBuilder: (_, __, ___) => Container(
-                                            color: AppColors.border,
-                                            child: const Icon(Icons.image_not_supported, color: AppColors.hint),
-                                          ),
                                         ),
                                       ),
                                     ),
@@ -210,7 +208,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                           // Price
                                           Row(
                                             children: [
-                                              Text('Rs. ${item.product.price.toStringAsFixed(0)}',
+                                          Text(Helpers.formatPrice(item.product.price),
                                                   style: const TextStyle(
                                                       color: AppColors.primary, fontWeight: FontWeight.w800, fontSize: 16)),
                                               const SizedBox(width: 8),
@@ -227,7 +225,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                         style: const TextStyle(
                                                             color: AppColors.danger, fontSize: 9, fontWeight: FontWeight.w700)),
                                                   ),
-                                                  Text('Rs. ${item.product.oldPrice.toStringAsFixed(0)}',
+                                                  Text(Helpers.formatPrice(item.product.oldPrice),
                                                       style: const TextStyle(
                                                           color: AppColors.hint, fontSize: 11,
                                                           decoration: TextDecoration.lineThrough)),
@@ -301,7 +299,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                   children: [
                                     Text('Total Order (${item.quantity}) :',
                                         style: const TextStyle(color: AppColors.hint, fontSize: 13)),
-                                    Text('Rs. ${item.total.toStringAsFixed(0)}',
+                                    Text(Helpers.formatPrice(item.total),
                                         style: const TextStyle(
                                             color: AppColors.textPrimary, fontWeight: FontWeight.w700, fontSize: 14)),
                                   ],
@@ -331,14 +329,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   ),
                   child: Column(
                     children: [
-                      _summaryRow('Subtotal', 'Rs. ${cart.total.toStringAsFixed(0)}'),
+                      _summaryRow('Subtotal', Helpers.formatPrice(cart.total)),
                       const SizedBox(height: 6),
-                      _summaryRow('Shipping Fee', 'Rs. ${shipping.toStringAsFixed(0)}'),
+                      _summaryRow('Shipping Fee', Helpers.formatPrice(shipping)),
                       const Padding(
                         padding: EdgeInsets.symmetric(vertical: 10),
                         child: Divider(color: AppColors.border, height: 1),
                       ),
-                      _summaryRow('Total Payment', 'Rs. ${total.toStringAsFixed(0)}', isTotal: true),
+                      _summaryRow('Total Payment', Helpers.formatPrice(total), isTotal: true),
                       const SizedBox(height: 16),
                       SizedBox(
                         width: double.infinity,

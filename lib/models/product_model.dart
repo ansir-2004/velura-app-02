@@ -20,4 +20,19 @@ class ProductModel {
     required this.rating,
     required this.sizes,
   });
+
+  factory ProductModel.fromFirestore(Map<String, dynamic> data, String id) {
+    return ProductModel(
+      id: id,
+      name: data['name'] ?? '',
+      category: data['category'] ?? '',
+      description: data['description'] ?? '',
+      imageUrl: data['imageUrl'] ?? '',
+      price: (data['price'] as num?)?.toDouble() ?? 0.0,
+      oldPrice: (data['oldPrice'] as num?)?.toDouble() ?? 0.0,
+      rating: (data['rating'] as num?)?.toDouble() ?? 0.0,
+      sizes: List<String>.from(data['sizes'] ?? []),
+    );
+  }
 }
+

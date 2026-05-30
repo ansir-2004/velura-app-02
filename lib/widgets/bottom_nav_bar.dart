@@ -7,6 +7,8 @@ import '../screens/home/home_screen.dart';
 import '../screens/cart/checkout_screen.dart';
 import '../screens/profile/profile_screen.dart';
 import '../screens/product/product_details_screen.dart';
+import 'product_image.dart';
+import '../utils/helpers.dart';
 
 class MainShell extends StatefulWidget {
   const MainShell({super.key});
@@ -238,12 +240,11 @@ class _WishlistScreen extends StatelessWidget {
                           child: Stack(children: [
                             ClipRRect(
                               borderRadius: const BorderRadius.vertical(top: Radius.circular(18)),
-                              child: Image.asset(p.imageUrl,
-                                  width: double.infinity, fit: BoxFit.cover,
-                                  errorBuilder: (_, __, ___) => Container(
-                                      color: AppColors.border,
-                                      child: const Icon(Icons.image_not_supported,
-                                          color: AppColors.hint, size: 36))),
+                              child: ProductImage(
+                                imageUrl: p.imageUrl,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                             // Remove from wishlist
                             Positioned(
@@ -275,7 +276,7 @@ class _WishlistScreen extends StatelessWidget {
                               Text(p.category,
                                   style: const TextStyle(color: AppColors.primary, fontSize: 11)),
                               const SizedBox(height: 4),
-                              Text('Rs. ${p.price.toStringAsFixed(0)}',
+                              Text(Helpers.formatPrice(p.price),
                                   style: const TextStyle(color: AppColors.primary,
                                       fontWeight: FontWeight.w800, fontSize: 13)),
                             ],

@@ -6,6 +6,8 @@ import '../../models/product_model.dart';
 import '../../providers/cart_provider.dart';
 import '../../providers/wishlist_provider.dart';
 import '../../widgets/custom_button.dart';
+import '../../widgets/product_image.dart';
+import '../../utils/helpers.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
   final ProductModel product;
@@ -61,7 +63,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     final text =
         '🛍️ Check out ${p.name} on Velura!\n'
         'Category: ${p.category}\n'
-        'Price: Rs. ${p.price.toStringAsFixed(0)}\n'
+        'Price: ${Helpers.formatPrice(p.price)}\n'
         'Rating: ⭐ ${p.rating}/5\n\n'
         'Download Velura app to explore luxury fashion!';
 
@@ -142,10 +144,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               borderRadius: const BorderRadius.vertical(bottom: Radius.circular(24)),
               child: SizedBox(
                 height: 360, width: double.infinity,
-                child: Image.asset(p.imageUrl, fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Container(color: AppColors.card,
-                        child: const Center(child: Icon(Icons.image_not_supported,
-                            color: AppColors.hint, size: 60)))),
+                child: ProductImage(imageUrl: p.imageUrl, fit: BoxFit.cover),
               ),
             ),
             Padding(
@@ -182,11 +181,11 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           fontSize: 22, fontWeight: FontWeight.w700)),
                   const SizedBox(height: 12),
                   Row(children: [
-                    Text('Rs. ${p.price.toStringAsFixed(0)}',
+                    Text(Helpers.formatPrice(p.price),
                         style: const TextStyle(color: AppColors.primary,
                             fontSize: 24, fontWeight: FontWeight.w800)),
                     const SizedBox(width: 12),
-                    Text('Rs. ${p.oldPrice.toStringAsFixed(0)}',
+                    Text(Helpers.formatPrice(p.oldPrice),
                         style: const TextStyle(color: AppColors.hint, fontSize: 16,
                             decoration: TextDecoration.lineThrough)),
                     const SizedBox(width: 8),

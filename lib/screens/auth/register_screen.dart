@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../../core/constants/colors.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_textfield.dart';
+import 'package:provider/provider.dart';
+import '../../providers/auth_provider.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -27,9 +29,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Future<void> _register() async {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _loading = true);
-    await Future.delayed(const Duration(seconds: 1));
+    
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final success = await authProvider.register(
+      _nameCtrl.text.trim(),
+      _emailCtrl.text.trim(),
+      _passCtrl.text.trim(),
+    );
+    
     setState(() => _loading = false);
-    if (mounted) Navigator.pushReplacementNamed(context, '/getstarted');
+    
+    if (success) {
+      if (mounted) Navigator.pushReplacementNamed(context, '/getstarted');
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Registration failed. Ensure email is not already used and Email/Password auth is enabled in Firebase.')),
+        );
+      }
+    }
   }
 
   @override

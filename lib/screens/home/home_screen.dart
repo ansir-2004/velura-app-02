@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../core/constants/colors.dart';
 import '../../providers/cart_provider.dart';
+import '../../models/product_model.dart';
 import '../../services/database_service.dart';
 import '../../widgets/product_card.dart';
 import '../product/product_details_screen.dart';
+import '../product/product_list_screen.dart';
 import '../profile/profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -25,12 +27,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final cart = context.watch<CartProvider>();
-    var products = DatabaseService.getProducts(category: _selectedCategory);
-    if (_searchQuery.isNotEmpty) {
-      products = products.where((p) =>
-          p.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-          p.category.toLowerCase().contains(_searchQuery.toLowerCase())).toList();
-    }
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -161,34 +157,73 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const SizedBox(height: 20),
 
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('${products.length} Products',
-                  style: const TextStyle(color: AppColors.textPrimary, fontSize: 18, fontWeight: FontWeight.w600)),
-              const Text('See all', style: TextStyle(color: AppColors.primary, fontSize: 13)),
-            ],
-          ),
-          const SizedBox(height: 12),
+          StreamBuilder<List<ProductModel>>(
+            stream: DatabaseService.getProductsStream(category: _selectedCategory),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(40),
+                    child: CircularProgressIndicator(color: AppColors.primary),
+                  ),
+                );
+              }
+              if (snapshot.hasError) {
+                return Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(40),
+                    child: Text('Error loading products', style: const TextStyle(color: AppColors.hint)),
+                  ),
+                );
+              }
 
-          products.isEmpty
-              ? const Center(child: Padding(
-                  padding: EdgeInsets.all(40),
-                  child: Text('No products found', style: TextStyle(color: AppColors.hint))))
-              : GridView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: products.length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2, mainAxisSpacing: 14,
-                    crossAxisSpacing: 14, childAspectRatio: 0.68,
+              var products = snapshot.data ?? [];
+              if (_searchQuery.isNotEmpty) {
+                products = products.where((p) =>
+                    p.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+                    p.category.toLowerCase().contains(_searchQuery.toLowerCase())).toList();
+              }
+
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('${products.length} Products',
+                          style: const TextStyle(color: AppColors.textPrimary, fontSize: 18, fontWeight: FontWeight.w600)),
+                      GestureDetector(
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const ProductListScreen()),
+                        ),
+                        child: const Text('See all', style: TextStyle(color: AppColors.primary, fontSize: 13)),
+                      ),
+                    ],
                   ),
-                  itemBuilder: (_, i) => ProductCard(
-                    product: products[i],
-                    onTap: () => Navigator.push(context,
-                        MaterialPageRoute(builder: (_) => ProductDetailsScreen(product: products[i]))),
-                  ),
-                ),
+                  const SizedBox(height: 12),
+                  products.isEmpty
+                      ? const Center(child: Padding(
+                          padding: EdgeInsets.all(40),
+                          child: Text('No products found', style: TextStyle(color: AppColors.hint))))
+                      : GridView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: products.length,
+                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2, mainAxisSpacing: 14,
+                            crossAxisSpacing: 14, childAspectRatio: 0.68,
+                          ),
+                          itemBuilder: (_, i) => ProductCard(
+                            product: products[i],
+                            onTap: () => Navigator.push(context,
+                                MaterialPageRoute(builder: (_) => ProductDetailsScreen(product: products[i]))),
+                          ),
+                        ),
+                ],
+              );
+            },
+          ),
         ],
       ),
     );

@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import '../../core/constants/colors.dart';
 import '../../providers/cart_provider.dart';
 import '../../widgets/custom_button.dart';
+import '../../widgets/product_image.dart';
+import '../../utils/helpers.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
@@ -55,10 +57,10 @@ class CartScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(10),
                               child: SizedBox(
                                 width: 70, height: 70,
-                                child: Image.asset(item.product.imageUrl, fit: BoxFit.cover,
-                                    errorBuilder: (_, __, ___) => Container(
-                                        color: AppColors.border,
-                                        child: const Icon(Icons.image_not_supported, color: AppColors.hint))),
+                                child: ProductImage(
+                                  imageUrl: item.product.imageUrl,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
                             const SizedBox(width: 12),
@@ -73,7 +75,7 @@ class CartScreen extends StatelessWidget {
                                   Text('Size: ${item.size}',
                                       style: const TextStyle(color: AppColors.hint, fontSize: 12)),
                                   const SizedBox(height: 6),
-                                  Text('Rs. ${item.product.price.toStringAsFixed(0)}',
+                                  Text(Helpers.formatPrice(item.product.price),
                                       style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.w700)),
                                 ],
                               ),
@@ -122,20 +124,20 @@ class CartScreen extends StatelessWidget {
                     children: [
                       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                         const Text('Subtotal', style: TextStyle(color: AppColors.hint)),
-                        Text('Rs. ${cart.subtotal.toStringAsFixed(0)}',
+                        Text(Helpers.formatPrice(cart.subtotal),
                             style: const TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.w600)),
                       ]),
                       const SizedBox(height: 8),
                       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                         const Text('Shipping', style: TextStyle(color: AppColors.hint)),
-                        Text('Rs. ${cart.shipping.toStringAsFixed(0)}',
+                        Text(Helpers.formatPrice(cart.shipping),
                             style: const TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.w600)),
                       ]),
                       const Divider(color: AppColors.border, height: 20),
                       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                         const Text('Total',
                             style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.w700, fontSize: 16)),
-                        Text('Rs. ${cart.total.toStringAsFixed(0)}',
+                        Text(Helpers.formatPrice(cart.total),
                             style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.w800, fontSize: 18)),
                       ]),
                       const SizedBox(height: 16),

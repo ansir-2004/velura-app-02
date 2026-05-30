@@ -11,8 +11,16 @@ import 'screens/auth/get_started_screen.dart';
 import 'screens/cart/checkout_screen.dart';
 import 'screens/orders/place_order_screen.dart';
 import 'widgets/bottom_nav_bar.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() => runApp(const VeluraApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(const VeluraApp());
+}
 
 class VeluraApp extends StatelessWidget {
   const VeluraApp({super.key});
